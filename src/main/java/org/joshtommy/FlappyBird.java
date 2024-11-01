@@ -1,4 +1,4 @@
-package org.joshAndTommy;
+package org.joshtommy;
 
 import javax.swing.*;
 
