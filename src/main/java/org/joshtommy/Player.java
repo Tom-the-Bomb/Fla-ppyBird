@@ -14,9 +14,13 @@ public class Player {
     BufferedImage image;
     // current position of the player on the board grid
     Point pos;
+    //gravity speed; positive to move down
     int gravityF = 1;
+    //side length of the player square
     int playerSize = 30;
+    //speed change on jump
     int bounce = -18;
+    //keeps track of the players speed which gets subtracted each tick
     private int speed = 0;
     // keep track of the player's score
 
@@ -25,13 +29,11 @@ public class Player {
         loadImage();
 
         // initialize the state
-        pos = new Point(Frame.WIDTH/2, Frame.HEIGHT/2);
+        pos = new Point(Frame.WIDTH / 2, Frame.HEIGHT / 2);
     }
 
     private void loadImage() { //TODO: image not loading temporarily using rectangle
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             image = ImageIO.read(new File("resources/player.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
@@ -39,41 +41,34 @@ public class Player {
     }
 
     public void draw(Graphics g, ImageObserver observer) {
-        // with the Point class, note that pos.getX() returns a double, but
-        // pos.x reliably returns an int. https://stackoverflow.com/a/30220114/4655368
-        // this is also where we translate board grid position into a canvas pixel
-        // position by multiplying by the tile size.
-//        g.drawImage(image, pos.x, pos.y, observer);
+//        g.drawImage(image, pos.x, pos.y, observer);//TODO: image for bird
         g.fillRect(
                 pos.x,
                 pos.y,
                 playerSize, playerSize);
-        g.setColor(new Color(200,200,20));
+        g.setColor(new Color(200, 200, 20));
     }
 
     public void keyPressed(KeyEvent e) {
-        // every keyboard get has a certain code. get the value of that code from the
-        // keyboard event so that we can compare it to KeyEvent constants
+        //get keyboard input
         int key = e.getKeyCode();
 
-        // depending on which arrow key was pressed, we're going to move the player by
-        // one whole tile for this input
-        if(key == KeyEvent.VK_SPACE) {
+        //space to jump;
+        if (key == KeyEvent.VK_SPACE) {
             speed = bounce;
-       }
+        }
     }
 
+    //changes the players speed by a constant for a parabolic movement
     public void gravity() {
-      speed += gravityF;
+        speed += gravityF;
     }
 
+    // called once every tick, before the repainting process happens
     public void tick() {
-        //changes speed by a constant
         gravity();
         //moves player by speed
-        pos.translate(0,speed);
-        // this gets called once every tick, before the repainting process happens.
-        // so we can do anything needed in here to update the state of the player.
+        pos.translate(0, speed);
 
         // prevent the player from moving off the edge of the board vertically
         if (pos.y < 0) {

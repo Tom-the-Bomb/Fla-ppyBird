@@ -15,11 +15,13 @@ public class Pipe {
         this.pipeHeight = pipeHeight;
     }
     public void draw(Graphics g, ImageObserver observer) {
+        //top pipe
         g.fillRect(
                 pos.x,
                 pos.y,
                 PIPE_WIDTH,
                 pipeHeight);
+        //bottom pipe
         g.fillRect(
                 pos.x,
                 pipeHeight + space,
