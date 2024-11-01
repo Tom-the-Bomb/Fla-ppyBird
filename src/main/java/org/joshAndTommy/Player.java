@@ -1,8 +1,5 @@
 package org.joshAndTommy;
 
-import org.w3c.dom.css.CSSPrimitiveValue;
-import org.w3c.dom.css.Rect;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -28,7 +25,7 @@ public class Player {
         loadImage();
 
         // initialize the state
-        pos = new Point(Board.WIDTH/2, Board.HEIGHT/2);
+        pos = new Point(Frame.WIDTH/2, Frame.HEIGHT/2);
     }
 
     private void loadImage() { //TODO: image not loading temporarily using rectangle
@@ -81,8 +78,8 @@ public class Player {
         // prevent the player from moving off the edge of the board vertically
         if (pos.y < 0) {
             pos.y = 0;
-        } else if (pos.y >= Board.HEIGHT - playerSize) {
-            pos.y = Board.HEIGHT - playerSize;
+        } else if (pos.y >= Frame.HEIGHT - playerSize) {
+            pos.y = Frame.HEIGHT - playerSize;
         }
     }
 

@@ -12,11 +12,11 @@ class FlappyBird {
 
         // create the jpanel to draw on.
         // this also initializes the game loop
-        Board board = new Board();
+        Frame frame = new Frame();
         // add the jpanel to the window
-        window.add(board);
+        window.add(frame);
         // pass keyboard inputs to the jpanel
-        window.addKeyListener(board);
+        window.addKeyListener(frame);
 
         // don't allow the user to resize the window
         window.setResizable(false);
