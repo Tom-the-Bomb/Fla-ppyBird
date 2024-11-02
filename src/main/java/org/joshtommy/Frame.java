@@ -9,6 +9,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     //board size
     public static final int HEIGHT = 700;
     public static final int WIDTH = 1000;
+    public static boolean ALIVE = true;
     //max distance from current to the next pipes opening
     public static final int MAX_PIPE_JUMP = 150;
     //spacing between pipes in ticks
@@ -41,6 +42,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     @Override
     //changes state of game before repaint
     public void actionPerformed(ActionEvent e) {
+        if (!ALIVE) return;
         //gets min and max for next pipes opening depending on last ones
         if (timeElapsed % DIST_NEXT_PIPE == 0) {
             int min;
@@ -84,10 +86,11 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         int i = 1;
         Pipe middlePipe = new Pipe(0);
         for (Pipe pipe : pipes) {
-            if (pipe.getPointTL().x < player.getPos().x || pipe.getPointTR().x > player.getPos().x) {
+            if (pipe.getPointTL().x < player.getPos().x && pipe.getPointTR().x > player.getPos().x) {
                 //under pipe in x pos
                 if (pipe.getPointTL().y > player.getPos().y || pipe.getPointBL().y < player.getPos().y) {
                     //not between gap in y
+                    ALIVE = false;
                     drawDefeatScreen(g); //TODO: show screen not working
                 }
             }
@@ -131,9 +134,16 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
 //        }
     }
 
+    //resets the games
+    public void reset() {
+        pipes.clear();
+        ALIVE = true;
+    }
+
     public void drawDefeatScreen(Graphics g) {
         g.setColor(new Color(70, 190, 230));
-        g.fillRect(200,200,200,200);
-        g.drawString("Defeat", Frame.WIDTH/2, Frame.HEIGHT/2);
+        g.fillRect(200, 200, 200, 200);
+        g.drawString("Defeat", Frame.WIDTH / 2, Frame.HEIGHT / 2);
+        reset();//TODO: only reset on button press
     }
 }
