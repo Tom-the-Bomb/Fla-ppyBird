@@ -82,4 +82,8 @@ public class Player {
         return pos;
     }
 
+    public void reset() {
+        pos = new Point(Frame.WIDTH / 2, Frame.HEIGHT / 2);
+        speed = 0;
+    }
 }

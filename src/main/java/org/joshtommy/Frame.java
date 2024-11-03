@@ -27,6 +27,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     private final transient ArrayDeque<Pipe> pipes;
     private final Random random;
     private boolean alive;
+    private boolean waitingForReset;
 
     public Frame() {
         // set the frames size
@@ -41,6 +42,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         lastPipeTick = 0;
         alive = true;
         random = new Random();
+        waitingForReset = false;
 
         // this timer will call the actionPerformed() method every DELAY ms
         // controls the delay between each tick in ms
@@ -120,6 +122,11 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         player.keyPressed(e);
+        if(waitingForReset) {
+            reset();
+            waitingForReset = false;
+        }
+
     }
 
     @Override
@@ -139,10 +146,11 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         ticksElapsed = 0;
         lastPipeTick = 0;
         pipeSpeed = 5;
+        player.reset();
     }
 
     public void drawDefeatScreen(Graphics g) {
-        String lossMessage = "YOU LOOOSE";
+        String lossMessage = "YOU LOOOSE! press any key to continue";
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(
                 RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -156,10 +164,9 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         g2d.setColor(new Color(0, 0, 0));
         g2d.setFont(new Font("Lato", Font.BOLD, 25));
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
-        g2d.drawString(lossMessage, Frame.WIDTH / 2 - metrics.stringWidth(lossMessage), Frame.HEIGHT / 2 - metrics.getHeight());
+        g2d.drawString(lossMessage, Frame.WIDTH / 2 - metrics.stringWidth(lossMessage)/2, Frame.HEIGHT / 2 - metrics.getHeight()/2);
 
-        //TODO: only reset on button press
-        reset();
+        waitingForReset = true;
     }
 
     public void drawScore(Graphics g) {
