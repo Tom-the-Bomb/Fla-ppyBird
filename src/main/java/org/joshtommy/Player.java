@@ -15,11 +15,11 @@ public class Player {
     // current position of the player on the board grid
     Point pos;
     //gravity speed; positive to move down
-    int gravityF = 1;
+    public static final int GRAVITY_SPEED = 1;
     //side length of the player square
-    int playerSize = 30;
+    public static final int PLAYER_SIZE = 30;
     //speed change on jump
-    int bounce = -18;
+    private static final int jumpHeight = -16;
     //keeps track of the players speed which gets subtracted each tick
     private int speed = 0;
     // keep track of the player's score
@@ -45,7 +45,7 @@ public class Player {
         g.fillRect(
                 pos.x,
                 pos.y,
-                playerSize, playerSize);
+                PLAYER_SIZE, PLAYER_SIZE);
         g.setColor(new Color(200, 200, 20));
     }
 
@@ -55,13 +55,13 @@ public class Player {
 
         //space to jump;
         if (key == KeyEvent.VK_SPACE) {
-            speed = bounce;
+            speed = jumpHeight;
         }
     }
 
     //changes the players speed by a constant for a parabolic movement
     public void gravity() {
-        speed += gravityF;
+        speed += GRAVITY_SPEED;
     }
 
     // called once every tick, before the repainting process happens
@@ -73,13 +73,9 @@ public class Player {
         // prevent the player from moving off the edge of the board vertically
         if (pos.y < 0) {
             pos.y = 0;
-        } else if (pos.y >= Frame.HEIGHT - playerSize) {
-            pos.y = Frame.HEIGHT - playerSize;
+        } else if (pos.y >= Frame.HEIGHT - PLAYER_SIZE) {
+            pos.y = Frame.HEIGHT - PLAYER_SIZE;
         }
-    }
-
-    public String getScore() {
-        return String.valueOf(0);
     }
 
     public Point getPos() {

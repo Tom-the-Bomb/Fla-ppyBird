@@ -4,11 +4,12 @@ import java.awt.*;
 import java.awt.image.ImageObserver;
 
 public class Pipe {
+    public static final int SPACE = 200;
     public static final int PIPE_WIDTH = 60;
+    public static int SPEED = 5;//positive number for left movement
+
     Point pos;
     int pipeHeight;
-    int space = 120;
-    public static final int SPEED = 3;//positive number for left movement
 
     Pipe(int pipeHeight) {
         pos = new Point(Frame.WIDTH + PIPE_WIDTH ,0);
@@ -24,7 +25,7 @@ public class Pipe {
         //bottom pipe
         g.fillRect(
                 pos.x,
-                pipeHeight + space,
+                pipeHeight + SPACE,
                 PIPE_WIDTH,
                 Frame.HEIGHT);
         g.setColor(new Color(23, 227, 29));
@@ -35,6 +36,7 @@ public class Pipe {
         pos.translate(-SPEED, 0);
     }
 
+    //T = top; B = bottom; L = left; r = right;
     public Point getPointTL() {
         return new Point(pos.x, pipeHeight);
     }
@@ -42,9 +44,9 @@ public class Pipe {
         return new Point(pos.x + PIPE_WIDTH, pipeHeight);
     }
     public Point getPointBL() {
-        return new Point(pos.x, pipeHeight + space);
+        return new Point(pos.x, pipeHeight + SPACE);
     }
     public Point getPointBR() {
-        return new Point(pos.x + PIPE_WIDTH, pipeHeight + space);
+        return new Point(pos.x + PIPE_WIDTH, pipeHeight + SPACE);
     }
 }
