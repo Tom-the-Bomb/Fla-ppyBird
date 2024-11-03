@@ -3,13 +3,13 @@ package org.joshtommy;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayDeque;
+import java.util.Random;
 import javax.swing.*;
 
 public class Frame extends JPanel implements ActionListener, KeyListener {
     //board size
     public static final int HEIGHT = 700;
     public static final int WIDTH = 1000;
-    public static boolean ALIVE = true;
     //delay to next tick in ms
     public static final int DELAY = 25;
     //max distance from current to the next pipes opening
@@ -17,12 +17,16 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     //spacing between pipes in ticks
     public static final int DIST_NEXT_PIPE = 300;
     public static final int TICKS_SPEED_INCREASE = 100;
+    //pipe speed
+    private int pipeSpeed = 5;//positive number for left movement
     //used to keep track of pipe distance
     private int ticksElapsed;
     private int lastPipeTick;
     // objects that appear on the game board
-    private final Player player;
-    private final ArrayDeque<Pipe> pipes;
+    private final transient Player player;
+    private final transient ArrayDeque<Pipe> pipes;
+    private final Random random;
+    private boolean alive;
 
     public Frame() {
         // set the frames size
@@ -35,6 +39,8 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         pipes = new ArrayDeque<>();
         ticksElapsed = 0;
         lastPipeTick = 0;
+        alive = true;
+        random = new Random();
 
         // this timer will call the actionPerformed() method every DELAY ms
         // controls the delay between each tick in ms
@@ -48,10 +54,9 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         //keeps time for pipes
         ticksElapsed++;
         //if your not alive your DEAD!!!
-        if (!ALIVE) return;
+        if (!alive) return;
         //gets min and max for next pipes opening depending on last ones
-        //if ((ticksElapsed * Pipe.SPEED) % DIST_NEXT_PIPE <= Pipe.SPEED) {
-        if ((ticksElapsed - lastPipeTick) * Pipe.SPEED >= DIST_NEXT_PIPE) {
+        if ((ticksElapsed - lastPipeTick) * pipeSpeed >= DIST_NEXT_PIPE) {
             int min;
             int max;
             if (!pipes.isEmpty()) {
@@ -62,14 +67,14 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
                 max = Frame.HEIGHT - MAX_PIPE_JUMP - Pipe.SPACE;
             }
             //random number not to far from last pipe opening
-            int random = (int) (Math.random() * (max - min)) + min;
-            pipes.add(new Pipe(random));
+            int randomInt = random.nextInt(max - min + 1) + min;
+            pipes.add(new Pipe(this, randomInt));
             lastPipeTick = ticksElapsed;
             if (pipes.getFirst().pos.x <= 0) {
                 pipes.removeFirst();
             }
         }
-        if (ticksElapsed % TICKS_SPEED_INCREASE == 0) Pipe.SPEED++;
+        if (ticksElapsed % TICKS_SPEED_INCREASE == 0) pipeSpeed++;
         player.tick();
         for (Pipe pipe : pipes) {
             pipe.tick();
@@ -84,21 +89,22 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
 
         // draw graphics.
         drawBackground(g);
-        player.draw(g, this);
+        player.draw(g);
         //redraw all pipes
         for (Pipe pipe : pipes) {
-            pipe.draw(g, this);
+            pipe.draw(g);
         }
-        //if (timeElapsed > PIPES_ON_SCREEN * DIST_NEXT_PIPE) {//TODO: deque not efficient (not traversable)
+        //TODO: deque not efficient (not traversable)
         for (Pipe pipe : pipes) {
-            if (pipe.getPointTL().x < player.getPos().x + Player.PLAYER_SIZE && pipe.getPointTR().x > player.getPos().x) {
-                //under pipe in x pos
-                if (pipe.getPointTL().y > player.getPos().y || pipe.getPointBL().y < player.getPos().y + Player.PLAYER_SIZE) {
-                    //not between gap in y
-                    ALIVE = false;
-                    drawDefeatScreen(g); //TODO: show screen not working
-                }
+            if (pipe.getPointTL().x < player.getPos().x + Player.PLAYER_SIZE
+                    && pipe.getPointTR().x > player.getPos().x
+                    && (pipe.getPointTL().y > player.getPos().y
+                    || pipe.getPointBL().y < player.getPos().y + Player.PLAYER_SIZE)) {
+                alive = false;
+                drawDefeatScreen(g);
+                break; //TODO: show screen not working
             }
+
         }
         drawScore(g);
 
@@ -124,29 +130,15 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     private void drawBackground(Graphics g) {
         g.setColor(new Color(70, 190, 230));
         //TODO: add clouds and things
-//        for (int row = 0; row < ROWS; row++) {
-//            for (int col = 0; col < COLUMNS; col++) {
-//                // only color every other tile
-//                if ((row + col) % 2 == 1) {
-//                    // draw a square tile at the current row/column position
-//                    g.fillRect(
-//                            col * TILE_SIZE,
-//                            row * TILE_SIZE,
-//                            TILE_SIZE,
-//                            TILE_SIZE
-//                    );
-//                }
-//            }
-//        }
     }
 
     //resets the games
     public void reset() {
         pipes.clear();
-        ALIVE = true;
+        alive = true;
         ticksElapsed = 0;
         lastPipeTick = 0;
-        Pipe.SPEED = 5;
+        pipeSpeed = 5;
     }
 
     public void drawDefeatScreen(Graphics g) {
@@ -166,7 +158,8 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
         g2d.drawString(lossMessage, Frame.WIDTH / 2 - metrics.stringWidth(lossMessage), Frame.HEIGHT / 2 - metrics.getHeight());
 
-        reset();//TODO: only reset on button press
+        //TODO: only reset on button press
+        reset();
     }
 
     public void drawScore(Graphics g) {
@@ -186,5 +179,9 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         g2d.setFont(new Font("Lato", Font.BOLD, 25));
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
         g2d.drawString(score, Frame.WIDTH - metrics.stringWidth(score) - 10, metrics.getHeight());
+    }
+
+    public int getPipeSpeed() {
+        return pipeSpeed;
     }
 }

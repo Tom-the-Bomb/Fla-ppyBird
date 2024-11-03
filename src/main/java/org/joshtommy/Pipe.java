@@ -1,21 +1,22 @@
 package org.joshtommy;
 
 import java.awt.*;
-import java.awt.image.ImageObserver;
 
 public class Pipe {
     public static final int SPACE = 200;
     public static final int PIPE_WIDTH = 60;
-    public static int SPEED = 5;//positive number for left movement
+
+    private final Frame frame;
 
     Point pos;
     int pipeHeight;
 
-    Pipe(int pipeHeight) {
+    Pipe(Frame frame, int pipeHeight) {
+        this.frame = frame;
         pos = new Point(Frame.WIDTH + PIPE_WIDTH ,0);
         this.pipeHeight = pipeHeight;
     }
-    public void draw(Graphics g, ImageObserver observer) {
+    public void draw(Graphics g) {
         //top pipe
         g.fillRect(
                 pos.x,
@@ -33,10 +34,10 @@ public class Pipe {
 
     public void tick() {
         //moves pipe
-        pos.translate(-SPEED, 0);
+        pos.translate(-frame.getPipeSpeed(), 0);
     }
 
-    //T = top; B = bottom; L = left; r = right;
+    //T = top, B = bottom, L = left, r = right
     public Point getPointTL() {
         return new Point(pos.x, pipeHeight);
     }
@@ -45,8 +46,5 @@ public class Pipe {
     }
     public Point getPointBL() {
         return new Point(pos.x, pipeHeight + SPACE);
-    }
-    public Point getPointBR() {
-        return new Point(pos.x + PIPE_WIDTH, pipeHeight + SPACE);
     }
 }

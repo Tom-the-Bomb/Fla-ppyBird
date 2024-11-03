@@ -3,7 +3,6 @@ package org.joshtommy;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -19,7 +18,7 @@ public class Player {
     //side length of the player square
     public static final int PLAYER_SIZE = 30;
     //speed change on jump
-    private static final int jumpHeight = -16;
+    private static final int JUMP_HEIGHT = -16;
     //keeps track of the players speed which gets subtracted each tick
     private int speed = 0;
     // keep track of the player's score
@@ -32,16 +31,17 @@ public class Player {
         pos = new Point(Frame.WIDTH / 2, Frame.HEIGHT / 2);
     }
 
-    private void loadImage() { //TODO: image not loading temporarily using rectangle
+    //TODO: image not loading temporarily using rectangle
+    private void loadImage() {
         try {
             image = ImageIO.read(new File("resources/player.png"));
         } catch (IOException exc) {
-            System.out.println("Error opening image file: " + exc.getMessage());
+            Logger.log("Error opening image file: " + exc.getMessage());
         }
     }
 
-    public void draw(Graphics g, ImageObserver observer) {
-//        g.drawImage(image, pos.x, pos.y, observer);//TODO: image for bird
+    public void draw(Graphics g) {
+        //TODO: image for bird
         g.fillRect(
                 pos.x,
                 pos.y,
@@ -53,9 +53,9 @@ public class Player {
         //get keyboard input
         int key = e.getKeyCode();
 
-        //space to jump;
+        //space to jump
         if (key == KeyEvent.VK_SPACE) {
-            speed = jumpHeight;
+            speed = JUMP_HEIGHT;
         }
     }
 

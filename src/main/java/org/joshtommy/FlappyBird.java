@@ -7,7 +7,7 @@ class FlappyBird {
         // create a window frame and set the title in the toolbar
         JFrame window = new JFrame("FlappyBird");
         // when we close the window, stop the app
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         // create the JPanel to draw on.
         // this also initializes the game loop
