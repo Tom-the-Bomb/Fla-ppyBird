@@ -121,12 +121,16 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        int key = e.getKeyCode();
         player.keyPressed(e);
-        if(waitingForReset) {
-            reset();
-            waitingForReset = false;
+        if (waitingForReset) {
+            if(key == KeyEvent.VK_C) {
+                reset();
+                waitingForReset = false;
+            }
+            if (key == KeyEvent.VK_Q)
+                System.exit(0);
         }
-
     }
 
     @Override
@@ -150,7 +154,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     }
 
     public void drawDefeatScreen(Graphics g) {
-        String lossMessage = "YOU LOOOSE! press any key to continue";
+        String lossMessage = "YOU LOOOSE! press C key to continue Q to quit";
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(
                 RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -164,7 +168,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         g2d.setColor(new Color(0, 0, 0));
         g2d.setFont(new Font("Lato", Font.BOLD, 25));
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
-        g2d.drawString(lossMessage, Frame.WIDTH / 2 - metrics.stringWidth(lossMessage)/2, Frame.HEIGHT / 2 - metrics.getHeight()/2);
+        g2d.drawString(lossMessage, Frame.WIDTH / 2 - metrics.stringWidth(lossMessage) / 2, Frame.HEIGHT / 2 - metrics.getHeight() / 2);
 
         waitingForReset = true;
     }
