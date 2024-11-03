@@ -2,10 +2,10 @@ package org.joshtommy;
 
 import javax.swing.*;
 
-class FlappyBird {
+class FlappiBird {
     private static void initWindow() {
         // create a window frame and set the title in the toolbar
-        JFrame window = new JFrame("FlappyBird");
+        JFrame window = new JFrame("FlappiBird");
         // when we close the window, stop the app
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -33,6 +33,6 @@ class FlappyBird {
         // blocking the GUI. https://stackoverflow.com/a/22534931/4655368
         // this is a lot of boilerplate code that you shouldn't be too concerned about.
         // just know that when main runs it will call initWindow() once.
-        SwingUtilities.invokeLater(FlappyBird::initWindow);
+        SwingUtilities.invokeLater(FlappiBird::initWindow);
     }
 }
