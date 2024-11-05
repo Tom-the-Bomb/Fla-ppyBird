@@ -3,8 +3,8 @@ package org.joshtommy;
 import java.awt.*;
 
 public class Pipe {
-    public static final int SPACE = 200;
-    public static final int PIPE_WIDTH = 60;
+    public static final int SPACE = 250;
+    public static final int PIPE_WIDTH = 100;
 
     private final Frame frame;
 

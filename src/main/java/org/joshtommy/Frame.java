@@ -1,10 +1,13 @@
 package org.joshtommy;
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayDeque;
 import java.util.Random;
-import javax.swing.*;
 
 public class Frame extends JPanel implements ActionListener, KeyListener {
     //board size
@@ -15,8 +18,8 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     //max distance from current to the next pipes opening
     public static final int MAX_PIPE_JUMP = 150;
     //spacing between pipes in ticks
-    public static final int DIST_NEXT_PIPE = 300;
-    public static final int TICKS_SPEED_INCREASE = 100;
+    public static final int DIST_NEXT_PIPE = 340;
+    public static final int TICKS_SPEED_INCREASE = 200;
     //pipe speed
     private int pipeSpeed = 5;//positive number for left movement
     //used to keep track of pipe distance
@@ -91,7 +94,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
 
         // draw graphics.
         drawBackground(g);
-        player.draw(g);
+        player.draw(g, this);
         //redraw all pipes
         for (Pipe pipe : pipes) {
             pipe.draw(g);
@@ -175,7 +178,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
 
     public void drawScore(Graphics g) {
         //score will update every 2500ms
-        String score = "" + (ticksElapsed / 100);
+        String score = "" + (ticksElapsed/100);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(
                 RenderingHints.KEY_TEXT_ANTIALIASING,

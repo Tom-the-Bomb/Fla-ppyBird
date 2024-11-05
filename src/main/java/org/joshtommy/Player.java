@@ -1,22 +1,24 @@
 package org.joshtommy;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;
+import java.net.URL;
 
 public class Player {
 
     // image that represents the player's position on the board
-    BufferedImage image;
+    private BufferedImage image;
     // current position of the player on the board grid
     Point pos;
     //gravity speed; positive to move down
     public static final int GRAVITY_SPEED = 1;
     //side length of the player square
-    public static final int PLAYER_SIZE = 30;
+    public static final int PLAYER_SIZE = 45;
     //speed change on jump
     private static final int JUMP_HEIGHT = -16;
     //keeps track of the players speed which gets subtracted each tick
@@ -34,19 +36,36 @@ public class Player {
     //TODO: image not loading temporarily using rectangle
     private void loadImage() {
         try {
-            image = ImageIO.read(new File("resources/player.png"));
+            URL fileURL = getClass().getResource("/darkBird.png");
+            assert fileURL != null;
+            image = ImageIO.read(new File(fileURL.getFile()));
+            Image tmp = image.getScaledInstance(PLAYER_SIZE, PLAYER_SIZE, Image.SCALE_SMOOTH);
+            BufferedImage dimg = new BufferedImage(PLAYER_SIZE, PLAYER_SIZE, BufferedImage.TYPE_INT_ARGB);
+
+            Graphics2D g2d = dimg.createGraphics();
+            g2d.drawImage(tmp, 0, 0, null);
+            g2d.dispose();
         } catch (IOException exc) {
             Logger.log("Error opening image file: " + exc.getMessage());
         }
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics g, ImageObserver observer) {
+
+            Image tmp = image.getScaledInstance(PLAYER_SIZE, PLAYER_SIZE, Image.SCALE_SMOOTH);
+            BufferedImage dimg = new BufferedImage(PLAYER_SIZE, PLAYER_SIZE, BufferedImage.TYPE_INT_ARGB);
+
+            Graphics2D g2d = dimg.createGraphics();
+            g2d.drawImage(tmp, 0, 0, null);
+            g2d.dispose();
+
         //TODO: image for bird
-        g.fillRect(
-                pos.x,
-                pos.y,
-                PLAYER_SIZE, PLAYER_SIZE);
-        g.setColor(new Color(200, 200, 20));
+        g.drawImage(dimg, pos.x, pos.y, observer);
+//        g.fillRect(
+//                pos.x,
+//                pos.y,
+//                PLAYER_SIZE, PLAYER_SIZE);
+//        g.setColor(new Color(200, 200, 20));
     }
 
     public void keyPressed(KeyEvent e) {
