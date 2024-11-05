@@ -101,10 +101,9 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         }
         //TODO: deque not efficient (not traversable)
         for (Pipe pipe : pipes) {
-            if (pipe.getPointTL().x < player.getPos().x + Player.PLAYER_SIZE
-                    && pipe.getPointTR().x > player.getPos().x
-                    && (pipe.getPointTL().y > player.getPos().y
-                    || pipe.getPointBL().y < player.getPos().y + Player.PLAYER_SIZE)) {
+            if (isTouchingPipe(getCenter(player.pos, Player.PLAYER_SIZE/2),
+                    Player.PLAYER_SIZE/2,
+                    pipe.getPointTL(), pipe.getPointTR(), pipe.getPointBL())) {
                 alive = false;
                 drawDefeatScreen(g);
                 break; //TODO: show screen not working
@@ -117,6 +116,20 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         Toolkit.getDefaultToolkit().sync();
     }
 
+    public boolean isTouchingPipe(Point center, int radius, Point tl, Point tr, Point bl) {
+        boolean isTouching = false;
+        if ((center.y - radius < tl.y || center.y + radius > bl.y)
+                && center.x + radius > tl.x && center.x - radius < tr.x
+        ) {
+            isTouching = true;
+        }
+        return isTouching;
+    }
+
+    public Point getCenter(Point p, int radius) {
+        return new Point(p.x + radius, p.y + radius);
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
         // this is not used but must be defined as part of the KeyListener interface
@@ -127,7 +140,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         int key = e.getKeyCode();
         player.keyPressed(e);
         if (waitingForReset) {
-            if(key == KeyEvent.VK_C) {
+            if (key == KeyEvent.VK_C) {
                 reset();
                 waitingForReset = false;
             }
@@ -157,7 +170,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     }
 
     public void drawDefeatScreen(Graphics g) {
-        String lossMessage = "YOU LOOOSE! press C key to continue Q to quit";
+        String lossMessage = "YOU LOOOSE press C key to continue Q to quit";
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(
                 RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -178,7 +191,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
 
     public void drawScore(Graphics g) {
         //score will update every 2500ms
-        String score = "" + (ticksElapsed/100);
+        String score = "" + (ticksElapsed / 100);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(
                 RenderingHints.KEY_TEXT_ANTIALIASING,

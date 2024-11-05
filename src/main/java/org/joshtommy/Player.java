@@ -3,6 +3,7 @@ package org.joshtommy;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
@@ -51,12 +52,16 @@ public class Player {
     }
 
     public void draw(Graphics g, ImageObserver observer) {
+            double rotationRequired = Math.toRadians (Math.min(speed * 3, 20));
+            int locationX = PLAYER_SIZE / 2;
+            int locationY = PLAYER_SIZE / 2;
+            AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
 
             Image tmp = image.getScaledInstance(PLAYER_SIZE, PLAYER_SIZE, Image.SCALE_SMOOTH);
             BufferedImage dimg = new BufferedImage(PLAYER_SIZE, PLAYER_SIZE, BufferedImage.TYPE_INT_ARGB);
 
             Graphics2D g2d = dimg.createGraphics();
-            g2d.drawImage(tmp, 0, 0, null);
+            g2d.drawImage(tmp, tx, observer);
             g2d.dispose();
 
         //TODO: image for bird
