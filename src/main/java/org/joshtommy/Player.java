@@ -24,6 +24,9 @@ public class Player {
     private static final int JUMP_HEIGHT = -16;
     //keeps track of the players speed which gets subtracted each tick
     private int speed = 0;
+    //image gets rotated around this point
+    int rotationPointX;
+    int rotationPointY;
     // keep track of the player's score
 
     public Player() {
@@ -34,16 +37,15 @@ public class Player {
         pos = new Point(Frame.WIDTH / 2, Frame.HEIGHT / 2);
     }
 
-    //TODO: image not loading temporarily using rectangle
     private void loadImage() {
         try {
             URL fileURL = getClass().getResource("/darkBird.png");
             assert fileURL != null;
             image = ImageIO.read(new File(fileURL.getFile()));
             Image tmp = image.getScaledInstance(PLAYER_SIZE, PLAYER_SIZE, Image.SCALE_SMOOTH);
-            BufferedImage dimg = new BufferedImage(PLAYER_SIZE, PLAYER_SIZE, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage img = new BufferedImage(PLAYER_SIZE, PLAYER_SIZE, BufferedImage.TYPE_INT_ARGB);
 
-            Graphics2D g2d = dimg.createGraphics();
+            Graphics2D g2d = img.createGraphics();
             g2d.drawImage(tmp, 0, 0, null);
             g2d.dispose();
         } catch (IOException exc) {
@@ -52,25 +54,20 @@ public class Player {
     }
 
     public void draw(Graphics g, ImageObserver observer) {
-            double rotationRequired = Math.toRadians (Math.min(speed * 3, 20));
-            int locationX = PLAYER_SIZE / 2;
-            int locationY = PLAYER_SIZE / 2;
-            AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+        //rotation for image
+        double rotationInRad = Math.toRadians(Math.min(speed * 3, 20));
+            rotationPointX = PLAYER_SIZE / 2;
+            rotationPointY = PLAYER_SIZE / 2;
+            AffineTransform tx = AffineTransform.getRotateInstance(rotationInRad, rotationPointX, rotationPointY);
 
             Image tmp = image.getScaledInstance(PLAYER_SIZE, PLAYER_SIZE, Image.SCALE_SMOOTH);
-            BufferedImage dimg = new BufferedImage(PLAYER_SIZE, PLAYER_SIZE, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage img = new BufferedImage(PLAYER_SIZE, PLAYER_SIZE, BufferedImage.TYPE_INT_ARGB);
 
-            Graphics2D g2d = dimg.createGraphics();
+            Graphics2D g2d = img.createGraphics();
             g2d.drawImage(tmp, tx, observer);
             g2d.dispose();
 
-        //TODO: image for bird
-        g.drawImage(dimg, pos.x, pos.y, observer);
-//        g.fillRect(
-//                pos.x,
-//                pos.y,
-//                PLAYER_SIZE, PLAYER_SIZE);
-//        g.setColor(new Color(200, 200, 20));
+        g.drawImage(img, pos.x, pos.y, observer);
     }
 
     public void keyPressed(KeyEvent e) {

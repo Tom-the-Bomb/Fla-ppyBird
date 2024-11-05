@@ -20,14 +20,16 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     //spacing between pipes in ticks
     public static final int DIST_NEXT_PIPE = 340;
     public static final int TICKS_SPEED_INCREASE = 200;
-    //pipe speed
+    //speeds
     private int pipeSpeed = 5;//positive number for left movement
+    private int cloudSpeed = 5;//positive number for left movement
     //used to keep track of pipe distance
     private int ticksElapsed;
     private int lastPipeTick;
     // objects that appear on the game board
     private final transient Player player;
     private final transient ArrayDeque<Pipe> pipes;
+    private final transient ArrayDeque<Cloud> clouds;
     private final Random random;
     private boolean alive;
     private boolean waitingForReset;
@@ -41,6 +43,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         // initialize the game state
         player = new Player();
         pipes = new ArrayDeque<>();
+        clouds = new ArrayDeque<>();
         ticksElapsed = 0;
         lastPipeTick = 0;
         alive = true;
@@ -71,6 +74,13 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
                 min = MAX_PIPE_JUMP;
                 max = Frame.HEIGHT - MAX_PIPE_JUMP - Pipe.SPACE;
             }
+            //clouds
+            cloudSpeed = random.nextInt(2) + 1;
+            int cloudScale = random.nextInt(5) + 1;
+            clouds.add(new Cloud( cloudSpeed, cloudScale, new Point(WIDTH, 50)));
+            if (clouds.getFirst().getPos().x <= 0) {
+                clouds.removeFirst();
+            }
             //random number not to far from last pipe opening
             int randomInt = random.nextInt(max - min + 1) + min;
             pipes.add(new Pipe(this, randomInt));
@@ -84,6 +94,9 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         for (Pipe pipe : pipes) {
             pipe.tick();
         }
+        for (Cloud cloud : clouds) {
+            cloud.tick();
+        }
         //calls paintComponent redrawing the graphics
         repaint();
     }
@@ -95,18 +108,23 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         // draw graphics.
         drawBackground(g);
         player.draw(g, this);
+        //redraw all clouds
+        for (Cloud cloud : clouds) {
+            cloud.draw(g);
+        }
         //redraw all pipes
         for (Pipe pipe : pipes) {
             pipe.draw(g);
         }
+
         //TODO: deque not efficient (not traversable)
         for (Pipe pipe : pipes) {
-            if (isTouchingPipe(getCenter(player.pos, Player.PLAYER_SIZE/2),
-                    Player.PLAYER_SIZE/2,
+            if (isTouchingPipe(getCenter(player.getPos(), Player.PLAYER_SIZE / 2),
+                    Player.PLAYER_SIZE / 2,
                     pipe.getPointTL(), pipe.getPointTR(), pipe.getPointBL())) {
                 alive = false;
                 drawDefeatScreen(g);
-                break; //TODO: show screen not working
+                break;
             }
 
         }
@@ -117,13 +135,8 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     }
 
     public boolean isTouchingPipe(Point center, int radius, Point tl, Point tr, Point bl) {
-        boolean isTouching = false;
-        if ((center.y - radius < tl.y || center.y + radius > bl.y)
-                && center.x + radius > tl.x && center.x - radius < tr.x
-        ) {
-            isTouching = true;
-        }
-        return isTouching;
+        return (center.y - radius < tl.y || center.y + radius > bl.y)
+                && center.x + radius > tl.x && center.x - radius < tr.x;
     }
 
     public Point getCenter(Point p, int radius) {
