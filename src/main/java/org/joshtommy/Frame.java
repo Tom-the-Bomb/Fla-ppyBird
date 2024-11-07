@@ -114,7 +114,7 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         }
         //redraw all pipes
         for (Pipe pipe : pipes) {
-            pipe.draw(g);
+            pipe.draw( g, this);
         }
 
         //TODO: deque not efficient (not traversable)
