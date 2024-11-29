@@ -22,7 +22,6 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     public static final int TICKS_SPEED_INCREASE = 200;
     //speeds
     private int pipeSpeed = 5;//positive number for left movement
-    private int cloudSpeed = 5;//positive number for left movement
     //used to keep track of pipe distance
     private int ticksElapsed;
     private int lastPipeTick;
@@ -68,16 +67,17 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
             int min;
             int max;
             if (!pipes.isEmpty()) {
-                min = Math.max(pipes.getLast().pipeHeight - MAX_PIPE_JUMP, MAX_PIPE_JUMP);
-                max = Math.min(pipes.getLast().pipeHeight + MAX_PIPE_JUMP, Frame.HEIGHT - MAX_PIPE_JUMP - Pipe.SPACE);
+                min = Math.max(pipes.getLast().pipeHeight - MAX_PIPE_JUMP, 30);
+                max = Math.min(pipes.getLast().pipeHeight + MAX_PIPE_JUMP, Frame.HEIGHT - 30 - Pipe.SPACE);
             } else {
                 min = MAX_PIPE_JUMP;
                 max = Frame.HEIGHT - MAX_PIPE_JUMP - Pipe.SPACE;
             }
             //clouds
-            cloudSpeed = random.nextInt(2) + 1;
+            //positive number for left movement
+            int cloudSpeed = random.nextInt(2) + 1;
             int cloudScale = random.nextInt(5) + 1;
-            clouds.add(new Cloud( cloudSpeed, cloudScale, new Point(WIDTH, 50)));
+            clouds.add(new Cloud(cloudSpeed, cloudScale, new Point(WIDTH, 50)));
             if (clouds.getFirst().getPos().x <= 0) {
                 clouds.removeFirst();
             }

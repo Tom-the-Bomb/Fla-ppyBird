@@ -28,10 +28,10 @@ public class Pipe {
 
     private void loadImage() {
         try {
-            URL fileURL = getClass().getResource("/pipe.png");
+            URL fileURL = getClass().getResource("/darkPipe.png");
             assert fileURL != null;
             image = ImageIO.read(new File(fileURL.getFile()));
-            URL fileURL2 = getClass().getResource("/pipeInverted.png");
+            URL fileURL2 = getClass().getResource("/darkPipeInverted.png");
             assert fileURL2 != null;
             inverted = ImageIO.read(new File(fileURL2.getFile()));
             //TODO: make image svg and scalable
@@ -68,14 +68,14 @@ public class Pipe {
 
     //T = top, B = bottom, L = left, r = right
     public Point getPointTL() {
-        return new Point(pos.x, pipeHeight - BUFFER_UP);
+        return new Point(pos.x + 30, pipeHeight - BUFFER_UP);
     }
 
     public Point getPointTR() {
-        return new Point(pos.x + PIPE_WIDTH, pipeHeight - BUFFER_UP);
+        return new Point(pos.x + 30 + PIPE_WIDTH, pipeHeight - BUFFER_UP);
     }
 
     public Point getPointBL() {
-        return new Point(pos.x, pipeHeight + SPACE + BUFFER_DOWN);
+        return new Point(pos.x + 30, pipeHeight + SPACE + BUFFER_DOWN);
     }
 }
