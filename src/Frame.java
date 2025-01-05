@@ -1,4 +1,3 @@
-package org.joshtommy;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,9 +1,8 @@
-package org.joshtommy;
 
 import javax.swing.*;
 
-class FlappiBird {
-    private static void initWindow() {
+public class FlappiBird {
+    public static void main(String[] args) {
         // create a window frame and set the title in the toolbar
         JFrame window = new JFrame("FlappiBird");
         // when we close the window, stop the app
@@ -26,13 +25,5 @@ class FlappiBird {
         window.setLocationRelativeTo(null);
         // display the window
         window.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        // invokeLater() is used here to prevent our graphics processing from
-        // blocking the GUI. https://stackoverflow.com/a/22534931/4655368
-        // this is a lot of boilerplate code that you shouldn't be too concerned about.
-        // just know that when main runs it will call initWindow() once.
-        SwingUtilities.invokeLater(FlappiBird::initWindow);
     }
 }
