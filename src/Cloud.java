@@ -2,7 +2,6 @@
 import java.awt.*;
 
 public class Cloud {
-
     public static final int CLOUD_HEIGHT = 20;
     public static final int CLOUD_WIDTH = 50;
 
@@ -17,18 +16,20 @@ public class Cloud {
     }
 
     public void draw(Graphics g) {
-        //top pipe
+        // draw the cloud (rectangle shape + white color)
         g.fillRect(
-                pos.x,
-                pos.y,
-                CLOUD_WIDTH * scaleFactor,
-                CLOUD_HEIGHT * scaleFactor);
-        //bottom pipe
-        g.setColor(new Color(255, 255, 255));
+            pos.x,
+            pos.y,
+            CLOUD_WIDTH * scaleFactor,
+            CLOUD_HEIGHT * scaleFactor
+        );
+        g.setColor(
+            new Color(255, 255, 255)
+        );
     }
 
     public void tick() {
-        //moves pipe
+        // moves the cloud horizontally: updates its position every frame (periodically)
         pos.translate(-speed, 0);
     }
 

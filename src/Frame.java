@@ -9,25 +9,32 @@ import java.util.ArrayDeque;
 import java.util.Random;
 
 public class Frame extends JPanel implements ActionListener, KeyListener {
-    //board size
+    // frame size
     public static final int HEIGHT = 700;
     public static final int WIDTH = 1000;
-    //delay to next tick in ms
+
+    //d elay to next tick in milliseconds
     public static final int DELAY = 25;
-    //max distance from current to the next pipes opening
+
+    // max distance from current to the next pipes opening
     public static final int MAX_PIPE_JUMP = 150;
-    //spacing between pipes in ticks
+
+    // spacing between pipes (in ticks)
     public static final int DIST_NEXT_PIPE = 340;
     public static final int TICKS_SPEED_INCREASE = 200;
-    //speeds
-    private int pipeSpeed = 5;//positive number for left movement
-    //used to keep track of pipe distance
+
+    // speeds (positive number representing leftwards movement)
+    private int pipeSpeed = 5;
+
+    // used to keep track of pipe distance
     private int ticksElapsed;
     private int lastPipeTick;
+
     // objects that appear on the game board
     private final transient Player player;
     private final transient ArrayDeque<Pipe> pipes;
     private final transient ArrayDeque<Cloud> clouds;
+
     private final Random random;
     private boolean alive;
     private boolean waitingForReset;
@@ -57,14 +64,19 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
     @Override
     //changes state of game before repaint
     public void actionPerformed(ActionEvent e) {
-        //keeps time for pipes
+        // keeps time for pipes
         ticksElapsed++;
-        //if your not alive your DEAD!!!
-        if (!alive) return;
+
+        // if your not alive your DEAD!!!
+        if (!alive) {
+            return;
+        }
+
         //gets min and max for next pipes opening depending on last ones
         if ((ticksElapsed - lastPipeTick) * pipeSpeed >= DIST_NEXT_PIPE) {
             int min;
             int max;
+
             if (!pipes.isEmpty()) {
                 min = Math.max(pipes.getLast().pipeHeight - MAX_PIPE_JUMP, 30);
                 max = Math.min(pipes.getLast().pipeHeight + MAX_PIPE_JUMP, Frame.HEIGHT - 30 - Pipe.SPACE);
@@ -72,23 +84,31 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
                 min = MAX_PIPE_JUMP;
                 max = Frame.HEIGHT - MAX_PIPE_JUMP - Pipe.SPACE;
             }
+
             //clouds
             //positive number for left movement
             int cloudSpeed = random.nextInt(2) + 1;
             int cloudScale = random.nextInt(5) + 1;
             clouds.add(new Cloud(cloudSpeed, cloudScale, new Point(WIDTH, 50)));
+
             if (clouds.getFirst().getPos().x <= 0) {
                 clouds.removeFirst();
             }
+
             //random number not to far from last pipe opening
             int randomInt = random.nextInt(max - min + 1) + min;
             pipes.add(new Pipe(this, randomInt));
             lastPipeTick = ticksElapsed;
+
             if (pipes.getFirst().pos.x <= 0) {
                 pipes.removeFirst();
             }
         }
-        if (ticksElapsed % TICKS_SPEED_INCREASE == 0) pipeSpeed++;
+
+        if (ticksElapsed % TICKS_SPEED_INCREASE == 0) {
+            pipeSpeed++;
+        }
+
         player.tick();
         for (Pipe pipe : pipes) {
             pipe.tick();
@@ -96,7 +116,8 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
         for (Cloud cloud : clouds) {
             cloud.tick();
         }
-        //calls paintComponent redrawing the graphics
+
+        // calls the `paintComponent` method redrawing the graphics
         repaint();
     }
 
@@ -116,16 +137,17 @@ public class Frame extends JPanel implements ActionListener, KeyListener {
             pipe.draw( g, this);
         }
 
-        //TODO: deque not efficient (not traversable)
         for (Pipe pipe : pipes) {
             if (isTouchingPipe(getCenter(player.getPos(), Player.PLAYER_SIZE / 2),
-                    Player.PLAYER_SIZE / 2,
-                    pipe.getPointTL(), pipe.getPointTR(), pipe.getPointBL())) {
+                Player.PLAYER_SIZE / 2,
+                pipe.getPointTopLeft(),
+                pipe.getPointTopRight(),
+                pipe.getPointBottomLeft()
+            )) {
                 alive = false;
                 drawDefeatScreen(g);
                 break;
             }
-
         }
         drawScore(g);
 

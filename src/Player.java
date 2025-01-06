@@ -38,9 +38,9 @@ public class Player {
 
     private void loadImage() {
         try {
-            URL fileURL = getClass().getResource("/darkBird.png");
-            assert fileURL != null;
-            image = ImageIO.read(new File(fileURL.getFile()));
+            image = ImageIO.read(new File(
+                getClass().getResource("/resources/darkBird.png").getFile()
+            ));
             Image tmp = image.getScaledInstance(PLAYER_SIZE, PLAYER_SIZE, Image.SCALE_SMOOTH);
             BufferedImage img = new BufferedImage(PLAYER_SIZE, PLAYER_SIZE, BufferedImage.TYPE_INT_ARGB);
 
@@ -48,7 +48,8 @@ public class Player {
             g2d.drawImage(tmp, 0, 0, null);
             g2d.dispose();
         } catch (IOException exc) {
-            Logger.log("Error opening image file: " + exc.getMessage());
+            exc.printStackTrace();
+            System.exit(0);
         }
     }
 
