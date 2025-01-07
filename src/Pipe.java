@@ -102,7 +102,7 @@ public class Pipe {
     }
 
     public Point getPointBL() {
-        return new Point(pos.x, pipeHeight + SPACE + BOTTOM_TRIANGLE_HEIGHT);
+        return new Point(pos.x + 5, pipeHeight + SPACE + BOTTOM_TRIANGLE_HEIGHT);
     }
 
     public Point getPointBM() {
@@ -110,6 +110,6 @@ public class Pipe {
     }
 
     public Point getPointBR() {
-        return new Point(pos.x + PIPE_WIDTH, pipeHeight + SPACE + BOTTOM_TRIANGLE_HEIGHT);
+        return new Point(pos.x + PIPE_WIDTH + 5, pipeHeight + SPACE + BOTTOM_TRIANGLE_HEIGHT);
     }
 }

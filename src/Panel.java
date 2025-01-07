@@ -34,6 +34,10 @@ public class Panel extends JPanel implements ActionListener, KeyListener {
     private int lastPipeTick;
 
     // objects that appear on the game board
+    //
+    // use ArrayDeque to store the pipes and clouds
+    // <https://www.geeksforgeeks.org/arraydeque-in-java/>
+    //
     private final Player player;
     private final ArrayDeque<Pipe> pipes;
     private final ArrayDeque<Cloud> clouds;
@@ -212,13 +216,13 @@ public class Panel extends JPanel implements ActionListener, KeyListener {
             double BL_BM = (BL.getY() - BM.getY()) / (BL.getX() - BM.getX()) * (playerBR.getX() - BM.getX()) + BM.getY();
             double BM_BR = (BM.getY() - BR.getY()) / (BM.getX() - BR.getX()) * (playerBL.getX() - BM.getX()) + BM.getY();
 
-            boolean inRange = playerTL.x < TM.x && playerTL.x > TL.x && playerTR.x > TM.x && playerTR.x < TR.x;
+            boolean inRange = playerTL.x <= TM.x && playerTL.x >= TL.x && playerTR.x >= TM.x && playerTR.x <= TR.x;
 
             if (
-                (inRange && playerBL.y > BM.y && playerBR.y > BM.y)
-                || (inRange && playerTL.y < TM.y && playerTR.y < TM.y)
-                || (playerTR.x > TL.x && playerTR.x < TM.x && (playerTR.y < TL_TM || playerBR.y > BL_BM))
-                || (playerTL.x < TR.x && playerTL.x > TM.x && (playerTL.y < TM_TR || playerBL.y > BM_BR))
+                (inRange && playerBL.y >= BM.y && playerBR.y >= BM.y)
+                || (inRange && playerTL.y <= TM.y && playerTR.y <= TM.y)
+                || (playerTR.x >= TL.x && playerTR.x <= TM.x && (playerTR.y <= TL_TM || playerBR.y >= BL_BM))
+                || (playerTL.x <= TR.x && playerTL.x >= TM.x && (playerTL.y <= TM_TR || playerBL.y >= BM_BR))
             ) {
                 alive = false;
                 drawDefeatScreen(g);
@@ -261,26 +265,13 @@ public class Panel extends JPanel implements ActionListener, KeyListener {
 
     public void drawDefeatScreen(Graphics g) {
         String lossMessage = "YOU LOOOSE press C key to continue Q to quit";
-        Graphics2D g2d = (Graphics2D) g;
 
-        g2d.setRenderingHint(
-            RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_ON
-        );
-        g2d.setRenderingHint(
-            RenderingHints.KEY_RENDERING,
-            RenderingHints.VALUE_RENDER_QUALITY
-        );
-        g2d.setRenderingHint(
-            RenderingHints.KEY_FRACTIONALMETRICS,
-            RenderingHints.VALUE_FRACTIONALMETRICS_ON
-        );
+        g.setColor(Color.black);
+        g.setFont(new Font("Britannic Bold", Font.BOLD, 30));
 
-        g2d.setColor(new Color(0, 0, 0));
-        g2d.setFont(new Font("Lato", Font.BOLD, 25));
-
-        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
-        g2d.drawString(
+        FontMetrics metrics = g.getFontMetrics(g.getFont());
+        // draw the loss message in the center of the screen
+        g.drawString(
             lossMessage,
             Panel.WIDTH / 2 - metrics.stringWidth(lossMessage) / 2,
             Panel.HEIGHT / 2 - metrics.getHeight() / 2
@@ -291,25 +282,13 @@ public class Panel extends JPanel implements ActionListener, KeyListener {
 
     // update score display every 2500 ms
     public void drawScore(Graphics g) {
-        String score = "" + (ticksElapsed / 100);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(
-            RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_ON
-        );
-        g2d.setRenderingHint(
-            RenderingHints.KEY_RENDERING,
-            RenderingHints.VALUE_RENDER_QUALITY
-        );
-        g2d.setRenderingHint(
-            RenderingHints.KEY_FRACTIONALMETRICS,
-            RenderingHints.VALUE_FRACTIONALMETRICS_ON
-        );
+        String score = String.valueOf(ticksElapsed / 100);
 
-        g2d.setColor(new Color(0, 0, 0));
-        g2d.setFont(new Font("Lato", Font.BOLD, 25));
-        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
-        g2d.drawString(score, Panel.WIDTH - metrics.stringWidth(score) - 10, metrics.getHeight());
+        g.setColor(Color.black);
+        g.setFont(new Font("Lato", Font.BOLD, 30));
+        FontMetrics metrics = g.getFontMetrics(g.getFont());
+        // draw the score in the top right corner of the screen
+        g.drawString(score, Panel.WIDTH - metrics.stringWidth(score) - 10, metrics.getHeight());
     }
 
     public int getPipeSpeed() {
