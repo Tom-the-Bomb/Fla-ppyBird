@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class Pipe {
     // height of space between top and bottom pipes
-    public static final int SPACE = 250;
+    public static final int SPACE = 180;
     // width of pipes
     public static final int PIPE_WIDTH = 100;
     // height of the triangular tip of the bottom pipe
@@ -90,7 +90,7 @@ public class Pipe {
     // (A = TL, B = TM, C = TR, D = BL, E = BM, F = BR)
     //
     public Point getPointTL() {
-        return new Point(pos.x, pipeHeight - TOP_TRIANGLE_HEIGHT);
+        return new Point(pos.x + 5, pipeHeight - TOP_TRIANGLE_HEIGHT);
     }
 
     public Point getPointTM() {
@@ -98,7 +98,7 @@ public class Pipe {
     }
 
     public Point getPointTR() {
-        return new Point(pos.x + PIPE_WIDTH, pipeHeight - TOP_TRIANGLE_HEIGHT);
+        return new Point(pos.x + PIPE_WIDTH + 5, pipeHeight - TOP_TRIANGLE_HEIGHT);
     }
 
     public Point getPointBL() {

@@ -17,14 +17,14 @@ public class Cloud {
 
     public void draw(Graphics g) {
         // draw the cloud (rectangle shape + white translucent color)
+        g.setColor(
+            new Color(255, 255, 255, 100)
+        );
         g.fillRect(
             pos.x,
             pos.y,
             CLOUD_WIDTH * scaleFactor,
             CLOUD_HEIGHT * scaleFactor
-        );
-        g.setColor(
-            new Color(255, 255, 255, 100)
         );
     }
 
