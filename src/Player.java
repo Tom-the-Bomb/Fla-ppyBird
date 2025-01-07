@@ -1,7 +1,6 @@
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
@@ -73,11 +72,9 @@ public class Player {
         g.drawImage(img, pos.x, pos.y, observer);
     }
 
-    public void keyPressed(KeyEvent e) {
-        // press space to jump
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            speed = JUMP_HEIGHT;
-        }
+    public void jump() {
+        // jump when space is pressed
+        speed = JUMP_HEIGHT;
     }
 
     // called once every tick, before the repainting process happens

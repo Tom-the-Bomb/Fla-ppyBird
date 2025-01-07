@@ -44,6 +44,14 @@ public class Panel extends JPanel implements ActionListener, KeyListener {
     // background image
     private Image background;
 
+    // score
+    private int score;
+    // high score
+    private int high;
+
+    // whether or not the user has pressed the space bar yet
+    private boolean spacePressed;
+
     private boolean alive;
     private boolean waitingForReset;
 
@@ -64,6 +72,9 @@ public class Panel extends JPanel implements ActionListener, KeyListener {
         lastPipeTick = 0;
         alive = true;
         waitingForReset = false;
+        score = 0;
+        high = 0;
+        spacePressed = false;
 
         // this timer will call the actionPerformed() method every `DELAY` ms
         // so we can update the game state such as ticking the assets
@@ -165,6 +176,23 @@ public class Panel extends JPanel implements ActionListener, KeyListener {
         // draw the player (bird)
         player.draw(g, this);
 
+        if (!spacePressed) {
+            // draw beginning instructions text
+            g.setColor(Color.black);
+            g.setFont(new Font("Britannic Bold", Font.BOLD, 30));
+
+            FontMetrics metrics = g.getFontMetrics(g.getFont());
+
+            String message = "Press space to jump";
+
+            // draw the loss message in the center of the screen
+            g.drawString(
+                message,
+                Panel.WIDTH / 2 - metrics.stringWidth(message) / 2,
+                Panel.HEIGHT / 2 - metrics.getHeight() / 2
+            );
+        }
+
         // re-draw all clouds
         for (Cloud cloud : clouds) {
             cloud.draw(g);
@@ -235,7 +263,11 @@ public class Panel extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        player.keyPressed(e);
+
+        if (key == KeyEvent.VK_SPACE) {
+            player.jump();
+            spacePressed = true;
+        }
 
         if (waitingForReset) {
             if (key == KeyEvent.VK_C) {
@@ -270,25 +302,53 @@ public class Panel extends JPanel implements ActionListener, KeyListener {
         g.setFont(new Font("Britannic Bold", Font.BOLD, 30));
 
         FontMetrics metrics = g.getFontMetrics(g.getFont());
+
+        int y = Panel.HEIGHT / 2 - metrics.getHeight() / 2;
+
         // draw the loss message in the center of the screen
         g.drawString(
             lossMessage,
-            Panel.WIDTH / 2 - metrics.stringWidth(lossMessage) / 2,
-            Panel.HEIGHT / 2 - metrics.getHeight() / 2
+            Panel.WIDTH / 2 - metrics.stringWidth(lossMessage) / 2, y
         );
+
+        if (score > high) {
+            high = score;
+
+            String highScoreMsg = "\nNew High Score of " + high + "!";
+
+            g.setColor(new Color(150, 0, 0));
+            g.drawString(
+                highScoreMsg,
+                Panel.WIDTH / 2 - metrics.stringWidth(highScoreMsg) / 2,
+                y + metrics.getHeight() + 10
+            );
+        }
 
         waitingForReset = true;
     }
 
     // update score display every 2500 ms
     public void drawScore(Graphics g) {
-        String score = String.valueOf(ticksElapsed / 100);
+        score = ticksElapsed / 100;
+
+        String score = String.valueOf(this.score);
+        String high = "High: " + this.high;
 
         g.setColor(Color.black);
-        g.setFont(new Font("Lato", Font.BOLD, 30));
+        g.setFont(new Font("Trebuchet MS", Font.BOLD, 30));
+
         FontMetrics metrics = g.getFontMetrics(g.getFont());
+
+        // top margin
+        int mt = metrics.getHeight();
+
         // draw the score in the top right corner of the screen
-        g.drawString(score, Panel.WIDTH - metrics.stringWidth(score) - 10, metrics.getHeight());
+        g.drawString(score, Panel.WIDTH - metrics.stringWidth(score) - 10, mt);
+
+        g.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
+        metrics = g.getFontMetrics(g.getFont());
+        // draw the high score in the top left corner of the screen
+        g.drawString(high, metrics.stringWidth(score) + 10, mt);
     }
 
     public int getPipeSpeed() {
