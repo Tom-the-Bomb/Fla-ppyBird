@@ -16,7 +16,7 @@ public class Cloud {
     }
 
     public void draw(Graphics g) {
-        // draw the cloud (rectangle shape + white color)
+        // draw the cloud (rectangle shape + white translucent color)
         g.fillRect(
             pos.x,
             pos.y,
@@ -24,7 +24,7 @@ public class Cloud {
             CLOUD_HEIGHT * scaleFactor
         );
         g.setColor(
-            new Color(255, 255, 255)
+            new Color(255, 255, 255, 100)
         );
     }
 

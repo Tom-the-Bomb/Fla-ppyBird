@@ -7,26 +7,30 @@ import java.io.File;
 import java.io.IOException;
 
 public class Pipe {
+    // height of space between top and bottom pipes
     public static final int SPACE = 250;
+    // width of pipes
     public static final int PIPE_WIDTH = 100;
+    // height of the triangular tip of the bottom pipe
+    public static final int BOTTOM_TRIANGLE_HEIGHT = 148;
+    // height of the triangular tip of the top pipe
+    public static final int TOP_TRIANGLE_HEIGHT = 171;
 
-    private static final int BUFFER_UP = 20;
-    private static final int BUFFER_DOWN = 9;
-
-    private final Frame frame;
+    private final Panel frame;
     private BufferedImage uprightPipe;
     private BufferedImage invertedPipe;
 
-    public Point pos;
-    int pipeHeight;
+    private Point pos;
+    private int pipeHeight;
 
-    public Pipe(Frame frame, int pipeHeight) {
+    public Pipe(Panel frame, int pipeHeight) {
         this.frame = frame;
         this.pipeHeight = pipeHeight;
 
         loadImage();
 
-        pos = new Point(Frame.WIDTH + PIPE_WIDTH, 0);
+        // position of the pipe starts right off the screen's right side
+        pos = new Point(Panel.WIDTH + PIPE_WIDTH, 0);
     }
 
     private void loadImage() {
@@ -37,15 +41,6 @@ public class Pipe {
             invertedPipe = ImageIO.read(new File(
                 getClass().getResource("/resources/darkPipeInverted.png").getFile()
             ));
-
-            Graphics2D g2d = uprightPipe.createGraphics();
-            Graphics2D g2d2 = invertedPipe.createGraphics();
-
-            g2d.drawImage(uprightPipe, 0, 0, null);
-            g2d2.drawImage(invertedPipe, 0, 0, null);
-
-            g2d.dispose();
-            g2d2.dispose();
         } catch (IOException exc) {
             exc.printStackTrace();
         }
@@ -68,20 +63,53 @@ public class Pipe {
         );
     }
 
+    public Point getPose() {
+        return pos;
+    }
+
+    public int getPipeHeight() {
+        return pipeHeight;
+    }
+
     public void tick() {
         // moves the pipe horizontally: updates its position every frame (periodically)
         pos.translate(-frame.getPipeSpeed(), 0);
     }
 
-    public Point getPointTopLeft() {
-        return new Point(pos.x + 30, pipeHeight - BUFFER_UP);
+    // Pipe structure:
+    // |   |
+    // A   C
+    //  * *
+    //   B
+    //
+    //   E
+    //  * *
+    // D   F
+    // |   |
+    //
+    // (A = TL, B = TM, C = TR, D = BL, E = BM, F = BR)
+    //
+    public Point getPointTL() {
+        return new Point(pos.x, pipeHeight - TOP_TRIANGLE_HEIGHT);
     }
 
-    public Point getPointTopRight() {
-        return new Point(pos.x + 30 + PIPE_WIDTH, pipeHeight - BUFFER_UP);
+    public Point getPointTM() {
+        return new Point(pos.x + PIPE_WIDTH / 2, pipeHeight);
     }
 
-    public Point getPointBottomLeft() {
-        return new Point(pos.x + 30, pipeHeight + SPACE + BUFFER_DOWN);
+    public Point getPointTR() {
+        return new Point(pos.x + PIPE_WIDTH, pipeHeight - TOP_TRIANGLE_HEIGHT);
+    }
+
+    public Point getPointBL() {
+        return new Point(pos.x, pipeHeight + SPACE + BOTTOM_TRIANGLE_HEIGHT);
+    }
+
+    public Point getPointBM() {
+        return new Point(pos.x + PIPE_WIDTH / 2, pipeHeight + SPACE);
+    }
+
+    public Point getPointBR() {
+        return new Point(pos.x + PIPE_WIDTH, pipeHeight + SPACE + BOTTOM_TRIANGLE_HEIGHT);
     }
 }
