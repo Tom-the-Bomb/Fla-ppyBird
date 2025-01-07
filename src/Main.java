@@ -1,16 +1,8 @@
 
-import java.awt.GraphicsEnvironment;
-
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        String fonts[] =
-      GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-
-    for (int i = 0; i < fonts.length; i++) {
-      System.out.println(fonts[i]);
-    }
         // create a window frame and set the title in the toolbar
         //
         // methods used referenced from: <https://docs.oracle.com/javase/8/docs/api/javax/swing/JFrame.html>
